@@ -60,7 +60,7 @@ impl<T: Display + Clone + Copy> Drop for LinkedList<T> {
 
 #[cfg(test)]
 mod test {
-    use super::{LinkedList, Node};
+    use super::LinkedList;
     use crate::linked_list::Link;
 
     #[test]

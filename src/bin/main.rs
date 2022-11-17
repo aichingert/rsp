@@ -1,10 +1,10 @@
 use rust_playground::collections::linked_list::*;
 
 fn main() {
-    let node = Node::new(10);
-    let mut list = LinkedList::new();
-    list.push(10);
+    let mut node: LinkedList<i32> = LinkedList::new(10);
+    node.push(10);
+    node.push(20);
+    node.push(10);
 
-
-    println!("{:?}", node);
+    println!("{}", node);
 }

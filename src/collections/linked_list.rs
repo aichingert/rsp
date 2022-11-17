@@ -1,56 +1,53 @@
-use std::fmt::{Display, Debug};
+use std::fmt::{self, Display, Debug};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct LinkedList<T: Display + Debug> {
-    head: Option<Box::<Node<T>>>,
-    len: usize
+    value: T,
+    len: usize,
+    next: Node<T>
 }
 
 impl<T: Display + Debug> LinkedList<T> {
-    pub fn new() -> Self {
+    pub fn new(value: T) -> Self {
         Self {
-            head: None,
-            len: 0
-        }
-    }
-
-    pub fn from_nodes(nodes: &[Node<T>]) -> Self {
-        let mut list: LinkedList<T> = LinkedList::new();
-
-        Self {
-            head: None,
-            len: 0
+            value,
+            len: 1,
+            next: Node::nil
         }
     }
 
     pub fn push(&mut self, value: T) {
-        if self.head.is_none() {
-            self.head = Some(Box::new(Node::new(value)));
-            return;
+        match self.next {
+            Node::node(ref mut next_node) => {
+                next_node.push(value);
+            },
+            Node::nil => {
+                let node = LinkedList::new(value);
+                self.next = Node::node(Box::new(node));
+            }
         }
+    }
+}
 
-        let mut current = &mut self.head;
-        while !current.as_ref().unwrap().next.is_none() {
-            current = Some(current.as_ref().unwrap().next).as_mut().unwrap();
+impl<T: Display + Debug> Display for LinkedList<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.next {
+            Node::node(ref next_node) => {
+                println!("Node:{}", self.value);
+                std::fmt::Display::fmt(&next_node, f)
+            },
+            Node::nil => {
+                Ok(())
+            }
         }
-            
     }
 }
 
 
-#[derive(Debug)]
-pub struct Node<T: Display + Debug> {
-    value: T,
-    next: Option<Box::<Node<T>>>
+
+#[derive(Debug, Clone)]
+pub enum Node<T: Display + Debug> {
+    node(Box::<LinkedList<T>>),
+    nil
 }
 
-impl<T: Display + Debug> Node<T> {
-    pub fn new(value: T) -> Self {
-        Node {
-            value,
-            next: None,
-        }
-
-    }
-
-}

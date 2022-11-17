@@ -1,7 +1,12 @@
 use rust_playground::collections::linked_list::*;
 
 fn main() {
-    let mut node: LinkedList = LinkedList::new();
+    let mut list: LinkedList = LinkedList::new();
 
-    println!("{:?}", node);
+    list.push(10);
+    list.push(20);
+
+    println!("{:?}", list.pop());
+
+    println!("{:?}", list);
 }

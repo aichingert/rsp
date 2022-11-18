@@ -5,7 +5,8 @@ type Link<T> = Option<Box<Node<T>>>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LinkedList<T: Display + Clone + Copy> {
-    head: Link<T>
+    head: Link<T>,
+    len: usize
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -16,7 +17,10 @@ struct Node<T: Display + Clone + Copy> {
 
 impl<T: Display + Clone + Copy> LinkedList<T> {
     pub fn new() -> Self {
-        Self { head: None }
+        Self { 
+            head: None,
+            len: 0
+        }
     }
 
     pub fn from_elements(elements: &[T]) -> Self {
@@ -35,6 +39,7 @@ impl<T: Display + Clone + Copy> LinkedList<T> {
             next: mem::replace(&mut self.head, None)
         });
 
+        self.len += 1;
         self.head = Some(next);
     }
 
@@ -42,6 +47,7 @@ impl<T: Display + Clone + Copy> LinkedList<T> {
         match mem::replace(&mut self.head, None) {
             None => None,
             Some(node) => {
+                self.len -= 1;
                 self.head = node.next;
                 Some(node.elem)
             }
@@ -95,5 +101,6 @@ mod test {
         let mut list: LinkedList<i32> = LinkedList::new();
 
         assert_eq!(None, list.pop());
+        assert_eq!(0, list.len);
     }
 }

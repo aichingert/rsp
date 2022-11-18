@@ -89,4 +89,11 @@ mod test {
             idx+=1;
         }
     }
+
+    #[test]
+    fn pop_from_empty_list() {
+        let mut list: LinkedList<i32> = LinkedList::new();
+
+        assert_eq!(None, list.pop());
+    }
 }

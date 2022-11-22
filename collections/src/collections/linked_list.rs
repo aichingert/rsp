@@ -47,6 +47,10 @@ impl<T: Display + Clone + Copy> LinkedList<T> {
             }
         }
     }
+    
+    pub fn is_empty(&self) -> bool {
+        self.head.is_none()
+    }
 }
 
 impl<T: Display + Clone + Copy> Drop for LinkedList<T> {

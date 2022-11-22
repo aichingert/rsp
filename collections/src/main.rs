@@ -35,63 +35,41 @@ fn main() {
 /// and returns the value calulated
 fn solve_upn_calculator(list: &mut LinkedList<f32>, input: &Vec<String>) -> Option<f32> {
     for i in 0..input.len() {
-        match input[i].as_str() {
-            "+" => {
-                if !check_calc(list, '+') {
-                    return None;
-                }
-            },
-            "-" => {
-                if !check_calc(list, '-') {
-                    return None;
-                }
-            },
-            "*" => {
-                if !check_calc(list, '*') {
-                    return None;
-                }
-            },
-            "/" => {
-                if !check_calc(list, '/') {
-                    return None;
-                }
-            },
-            _ => {
-                let parse = input[i].parse::<f32>();
+        if &input[i][0..=0] == "+" || &input[i][0..=0] == "-" || &input[i][0..=0] == "*" || &input[i][0..=0] == "/" {
+            let mut values: [f32; 2] = [0f32; 2];
 
-                match parse {
-                    Ok(value) => list.push(value),
-                    Err(_err) => return None
+            for i in 0..2usize {
+                if let Some(value) = list.pop() {
+                    values[i] = value;
+                } else {
+                    return None;
                 }
+            }
+
+            match &input[i][0..=0] {
+                "+" => list.push(values[0] + values[1]),
+                "-" => list.push(values[0] - values[1]),
+                "*" => list.push(values[0] * values[1]),
+                "/" => list.push(values[0] / values[1]),
+                _ => {
+                    return None;
+                }
+            }
+        } else {
+            let parse = input[i].parse::<f32>();
+
+            match parse {
+                Ok(value) => list.push(value),
+                Err(_err) => return None
             }
         }
     }
 
+    let result: Option<f32> = list.pop();
 
-    list.pop()
-}
-
-fn check_calc(list: &mut LinkedList<f32>, op: char) -> bool {
-    let mut values: [f32; 2] = [0f32; 2];
-
-    for i in 0..2usize {
-
-        if let Some(value) = list.pop() {
-            values[i] = value;
-        } else {
-            return false;
-        }
+    if list.is_empty() {
+        result
+    } else {
+        None
     }
-
-    match op {
-        '+' => list.push(values[0] + values[1]),
-        '-' => list.push(values[0] - values[1]),
-        '*' => list.push(values[0] * values[1]),
-        '/' => list.push(values[0] / values[1]),
-        _ => {
-            return false;
-        }
-    }
-
-    true
 }

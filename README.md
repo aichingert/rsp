@@ -3,5 +3,5 @@ This should be a collection of small projects where I learn about a new feature 
 
 ## Projects
 * Collections
-    * <a href="/src/collections/linked_list.rs" traget="_blank">list<a/>
+    * <a href="collections/collections/linked_list.rs" traget="_blank">list<a/>
 

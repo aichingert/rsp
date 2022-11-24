@@ -9,7 +9,7 @@ fn main() {
     std::io::stdin().read_line(&mut line).unwrap();
     line = line.trim().to_string();
 
-    let result: Option<f32> = solve_upn_calculator(&mut list, &line.split(' ').map(|s| s.to_string()).collect::<Vec<String>>());
+    let result: Option<f32> = solve_upn_calculator(&mut list, &line.split(' ').map(|s| s.to_string()).filter(|f| !f.is_empty()).collect::<Vec<String>>());
 
     if let Some(res) = result {
         println!("The result is {res}");

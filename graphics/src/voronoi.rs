@@ -3,6 +3,7 @@ use std::{
     fs::File,
     io::Write
 };
+use rand::random;
 
 const SEEDS_COUNT: usize = 10;
 const HEIGHT: usize = 600;
@@ -20,15 +21,25 @@ const BRIGHT_AQUA: u32 = 0xFF8ec07c;
 const BRIGHT_ORANGE: u32 = 0xFFfe8019;
 
 pub struct Voronoi {
-    seeds: [u16; SEEDS_COUNT],
+    points: [Point;SEEDS_COUNT],
     image: Vec<Vec<u32>>
 }
+
+#[derive(Copy, Clone)]
+struct Point(usize, usize); 
     
 impl Voronoi {
     pub fn new() -> Self {
+        let mut points: [Point;SEEDS_COUNT] = [Point(0,0);SEEDS_COUNT];
+
+        for i in 0..SEEDS_COUNT {
+            points[i].0 = random::<usize>()%WIDTH;
+            points[i].1 = random::<usize>()%HEIGHT;
+        }
+
         Self {
-            seeds: [0;SEEDS_COUNT],
-            image: vec![vec![BRIGHT_BLUE; WIDTH]; HEIGHT]
+            points,
+            image: vec![vec![BRIGHT_AQUA; WIDTH]; HEIGHT]
         }
     }
 

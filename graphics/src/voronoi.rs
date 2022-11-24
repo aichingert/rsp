@@ -27,6 +27,15 @@ pub struct Voronoi {
 
 #[derive(Copy, Clone)]
 struct Point(usize, usize); 
+
+impl Point {
+    fn sqrt_dist(&self, x: i32, y: i32) -> usize {
+        let dx: usize = (self.0 as i32 - x).abs() as usize;
+        let dy: usize = (self.1 as i32 - y).abs() as usize;
+
+        return dx*dx + dy*dy;
+    }
+}
     
 impl Voronoi {
     pub fn new() -> Self {
@@ -40,6 +49,33 @@ impl Voronoi {
         Self {
             points,
             image: vec![vec![BRIGHT_AQUA; WIDTH]; HEIGHT]
+        }
+    }
+
+    pub fn fill_circle(&mut self, radius: usize, color: u32) {
+        // .....
+        // .***.
+        // .*@*.
+        // .***.
+        // .....
+
+        for i in 0..SEEDS_COUNT {
+            let x0: usize = self.points[i].0 - radius;
+            let y0: usize = self.points[i].1 - radius;
+            let x1: usize = self.points[i].0 + radius;
+            let y1: usize = self.points[i].1 + radius;
+
+            for x in x0..=x1 {
+                if x < WIDTH {
+                    for y in y0..=y1 {
+                        if y < HEIGHT {
+                            if self.points[i].sqrt_dist(x as i32, y as i32) <= radius*radius {
+                                self.image[y][x] = color;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

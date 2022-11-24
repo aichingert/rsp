@@ -5,5 +5,5 @@ use voronoi::*;
 fn main() {
     let mut voronoi: Voronoi = Voronoi::new();
 
-    voronoi.create_image("name.ppm");
+    voronoi.save_image("name.ppm");
 }

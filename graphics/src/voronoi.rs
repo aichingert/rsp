@@ -6,19 +6,26 @@ use std::{
 use rand::random;
 
 const SEEDS_COUNT: usize = 10;
-const HEIGHT: usize = 600;
-const WIDTH: usize = 800;
+const HEIGHT: usize = 1920;
+const WIDTH: usize = 1080;
 
-const RED: u32 = 0xFF0000FF;
-const WHITE: u32 = 0xFFFFFFFF;
+const BRIGHT_RED: u32       = 0xFF3449FB;
+const BRIGHT_GREEN: u32     = 0xFF26BBB8;
+const BRIGHT_YELLOW: u32    = 0xFF2FBDFA;
+const BRIGHT_BLUE: u32      = 0xFF98A583;
+const BRIGHT_PURPLE: u32    = 0xFF9B86D3;
+const BRIGHT_AQUA: u32      = 0xFF7CC08E;
+const BRIGHT_ORANGE: u32    = 0xFF1980FE;
 
-const BRIGHT_RED: u32 = 0xFFfb4934;
-const BRIGHT_GREEN: u32 = 0xFFb8bb26;
-const BRIGHT_YELLOW: u32 = 0xFFfabd2f;
-const BRIGHT_BLUE: u32 = 0xFF83a598;
-const BRIGHT_PURPLE: u32 = 0xFFd3869b;
-const BRIGHT_AQUA: u32 = 0xFF8ec07c;
-const BRIGHT_ORANGE: u32 = 0xFFfe8019;
+const PALETTE: [u32; 7] = [
+    BRIGHT_RED, 
+    BRIGHT_GREEN,
+    BRIGHT_YELLOW, 
+    BRIGHT_BLUE,
+    BRIGHT_PURPLE, 
+    BRIGHT_AQUA,
+    BRIGHT_ORANGE
+];
 
 pub struct Voronoi {
     points: [Point;SEEDS_COUNT],
@@ -46,7 +53,7 @@ impl Voronoi {
             points[i].1 = random::<usize>()%HEIGHT;
         }
 
-        Self {
+        Voronoi {
             points,
             image: vec![vec![BRIGHT_AQUA; WIDTH]; HEIGHT]
         }
@@ -78,6 +85,22 @@ impl Voronoi {
             }
         }
     }
+
+    pub fn render_voronoi(&mut self) {
+        for y in 0..HEIGHT {
+            for x in 0..WIDTH {
+                let mut j: usize = 0;
+                for i in 1..SEEDS_COUNT {
+                    if self.points[i].sqrt_dist(x as i32, y as i32) < self.points[j].sqrt_dist(x as i32, y as i32) {
+                        j = i;
+                    }
+                }
+
+                self.image[y][x] = PALETTE[j%PALETTE.len()];
+            }
+        }
+    }
+
 
     pub fn save_image<T: AsRef<Path> + std::fmt::Display>(&self, path: T) {
         let mut file = match File::create(&path) {

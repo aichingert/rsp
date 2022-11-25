@@ -5,9 +5,9 @@ use std::{
 };
 use rand::random;
 
-const SEEDS_COUNT: usize = 10;
-const HEIGHT: usize = 1920;
-const WIDTH: usize = 1080;
+const SEEDS_COUNT: usize = 20;
+const HEIGHT: usize = 1080;
+const WIDTH: usize = 1920;
 
 const BRIGHT_RED: u32       = 0xFF3449FB;
 const BRIGHT_GREEN: u32     = 0xFF26BBB8;
@@ -67,8 +67,17 @@ impl Voronoi {
         // .....
 
         for i in 0..SEEDS_COUNT {
-            let x0: usize = self.points[i].0 - radius;
-            let y0: usize = self.points[i].1 - radius;
+            let x0: usize = if self.points[i].0 as i32 - radius as i32 > -1 {
+                self.points[i].0 - radius
+            } else {
+                0
+            };
+            let y0: usize = if self.points[i].1 as i32 - radius as i32 > -1 {
+                self.points[i].1 - radius
+            } else {
+                0
+            };
+
             let x1: usize = self.points[i].0 + radius;
             let y1: usize = self.points[i].1 + radius;
 

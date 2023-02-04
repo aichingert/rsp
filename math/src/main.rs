@@ -1,13 +1,13 @@
 // Math - rust
 // aichingert
 
-mod random;
+pub mod random;
+pub mod pi;
 
-use random::Rand;
+use pi::approximate_pi;
 
 fn main() {
-    let mut r = Rand::new(10).into_iter();
-    
-    println!("{}", r.next().unwrap());
-    println!("{}", r.next().unwrap());
+    let precision: u32 = 1000000;
+
+    println!("Approximation of pi: {} [precision: {}]", approximate_pi(precision), precision);
 }

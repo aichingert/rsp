@@ -1,25 +1,23 @@
-// Random - generating random numbers
+// Random - pseudo random number generator using a seed
 // aichingert
 
-const A: i32 = 234;
-const M: i32 = 34975321;
-
-const Q: i32 = M / A;
-const R: i32 = M % A;
+const A: f32 = 32132.232;
+const M: f32 = 23832.;
+const B: f32 = 12482.23;
 
 #[derive(Debug)]
 pub struct Rand {
-    seed: i32
+    seed: f32 
 }
 
 impl Rand {
-    pub fn new(seed: i32) -> Self {
-        Self { seed }
+    pub fn new(seed: f32) -> Self {
+        Self { seed: seed % M }
     }
 }
 
 impl IntoIterator for Rand {
-    type Item = i32;
+    type Item = f32;
     type IntoIter = RandIterator;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -28,19 +26,14 @@ impl IntoIterator for Rand {
 }
 
 pub struct RandIterator {
-    seed: i32
+    seed: f32
 }
 
 impl Iterator for RandIterator {
-    type Item = i32;
+    type Item = f32;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.seed = A * (self.seed % Q) - R * (self.seed / Q);
-
-        if self.seed < 0 {
-            Some(self.seed + M)
-        } else {
-            Some(self.seed)
-        }
+        self.seed = (A * self.seed + B) % (M+1.);
+        Some(self.seed / M)
     }
 }

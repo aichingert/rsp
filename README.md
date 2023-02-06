@@ -8,4 +8,3 @@ This should be a collection of small projects where I learn about a new feature 
 * Graphics
     * <a href="graphics/src/voronoi.rs" target="_blank">voronoi-diagram<a/>
 
-

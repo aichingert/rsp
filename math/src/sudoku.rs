@@ -44,7 +44,7 @@ impl Sudoku {
 		let mut invalid: Vec<i32> = Vec::new();
 
 		for i in 0..self.board.len() {
-			if row != i && self.board[row][i] != 0 {
+			if row != i && !invalid.contains(&self.board[row][i]) && self.board[row][i] != 0 {
 				invalid.push(self.board[row][i]);
 			}
 			if col != i && !invalid.contains(&self.board[i][col]) && self.board[i][col] != 0 {
@@ -65,28 +65,61 @@ impl Sudoku {
 			}
 		}
 	
-		(0..=9).filter(|n| invalid.contains(n)).collect::<Vec<i32>>()
+		(1..=9).filter(|n| !invalid.contains(n)).collect::<Vec<i32>>()
 	}
 
 	pub fn set_values(&mut self) {
 		self.values = Vec::new();
 		let mut loc: usize = 0;
 		
-		println!("{:?}", self.board[1][1]);
-		println!("{:?}", self.find_values(1, 1));
-		/*
 		for i in 0..self.board.len() {
 			self.values.push(vec![]);
 			for j in 0..self.board[i].len() {
-				self.find_values(i, j);
-				println!("{:?}", self.find_values(i, j));
+				let pos = self.find_values(i,j);
+				self.values[i].push(pos);
 			}
 			loc += 1;
-		}*/
+		}
 	}
 
 	pub fn solve(&mut self) {
-		self.set_values();
+		let mut done: bool = false;
+
+		while !done {
+			self.set_values();
+			done = true;
+			
+			for i in 0..self.board.len() {
+				for j in 0..self.board[i].len() {
+					if self.values[i][j].len() == 1 {
+						self.board[i][j] = self.values[i][j][0];
+						done = false;
+						println!("{i} {j}");
+					}
+				}
+			}
+		}
+
 		
+	}
+
+	fn solved(&self) -> bool {
+		for i in 0..self.board.len() {
+			for j in 0..self.board[i].len() {
+				if board[i][j] == 0 { return false; }
+			}
+		}
+
+		true
+	}
+	
+	pub fn show(&self) {
+		for i in 0..self.board.len() {
+			print!("[ ");
+			for j in 0..self.board[i].len() {
+				print!("{} ", self.board[i][j]);
+			}
+			println!("]");
+		}
 	}
 }

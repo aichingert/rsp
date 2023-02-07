@@ -52,10 +52,10 @@ impl Sudoku {
 
         // Searches the board vertical and diagonal
         for i in 0..self.board.len() {
-            if row != i && !invalid.contains(&self.board[row][i]) && self.board[row][i] != 0 {
+            if col != i && !invalid.contains(&self.board[row][i]) && self.board[row][i] != 0 {
                 invalid.push(self.board[row][i]);
             }
-            if col != i && !invalid.contains(&self.board[i][col]) && self.board[i][col] != 0 {
+            if row != i && !invalid.contains(&self.board[i][col]) && self.board[i][col] != 0 {
                 invalid.push(self.board[i][col]);
             }
         }
@@ -74,8 +74,6 @@ impl Sudoku {
 
         for r in ry*self.dimension..(ry+1)*self.dimension {
             for c in cx*self.dimension..(cx+1)*self.dimension{
-                if r == row && c == col { continue; }
-
                 if self.board[r][c] != 0 && !invalid.contains(&self.board[r][c]) {
                     invalid.push(self.board[r][c]);	
                 }
@@ -104,14 +102,6 @@ impl Sudoku {
     /// solves the sudoku
     pub fn solve(&mut self) {
         self.set_obv();
-
-        for i in 0..self.values.len() {
-            for j in 0..self.values[i].len() {
-                if self.values[i][j].len() == 2 {
-                    println!("{i} {j} => {:?}", self.values[i][j]);
-                }
-            }
-        }
     }
 
     /// set_obv:

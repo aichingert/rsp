@@ -20,10 +20,10 @@ fn main() {
     //       v
     //let mut sudoku: Sudoku = Sudoku::from_str("530070000\n600195000\n098000060\n800060003\n400803001\n700020006\n060000280\n000419005\n000080079");
 
-    // Expert -
-    //        |
-    //        v
-    let mut sudoku: Sudoku = Sudoku::from_str("031000400\n040000052\n000500000\n006100200\n010306000\n700200091\n900000070\n000060000\n000908005");
+    // Expert --
+    //         |
+    //         v
+    let mut sudoku: Sudoku = Sudoku::from_str("007000003\n159000000\n008000207\n000200046\n040007000\n500800000\n080050900\n000000100\n000091070");
 
     sudoku.show();
     sudoku.solve();

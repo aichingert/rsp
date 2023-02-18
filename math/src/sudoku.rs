@@ -87,7 +87,7 @@ impl Sudoku {
     /// set_values:
     /// sets the possible values for every position
     fn set_values(&mut self) {
-        self.values = Vec::new();
+        self.values.clear();
 
         for i in 0..self.board.len() {
             self.values.push(vec![]);
@@ -96,31 +96,6 @@ impl Sudoku {
                 self.values[i].push(pos);
             }
         }
-    }
-
-    /// solve:
-    /// solves the sudoku
-    pub fn solve(&mut self) {
-        self.set_obv();
-        
-        while !self.solved() {
-            if let Some(pos) = Self::get_pos(self) {
-                println!("{:?}", pos);
-                if pos.0 == 0 && pos.1 == 8 {
-                    for i in 0..self.values.len() {
-                        println!("{:?}", self.values[i]);
-                    }
-                }
-                if Self::check_number(&mut self.clone(), (pos.0, pos.1), pos.2[0]) {
-                    self.board[pos.0][pos.1] = pos.2[0];
-                } else if Self::check_number(&mut self.clone(), (pos.0, pos.1), pos.2[1]) {
-                    self.board[pos.0][pos.1] = pos.2[1];
-                }
-                self.set_obv();
-                self.show();
-                println!();
-            } else { return; }
-        }     
     }
 
     fn get_pos(sudoku: &Sudoku) -> Option<(usize,usize, Vec<i32>)> {
@@ -135,6 +110,26 @@ impl Sudoku {
         None
     }
 
+    /// solve:
+    /// solves the sudoku
+    pub fn solve(&mut self) {
+        self.set_obv();
+        
+        while !self.solved() {
+            self.set_values();
+
+            match Self::get_pos(self) {
+                Some(pos) => match Self::check_number(&mut self.clone(), (pos.0,pos.1), pos.2[0]) {
+                    true => self.board[pos.0][pos.1] = pos.2[0],
+                    false => self.board[pos.0][pos.1] = pos.2[1],
+                },
+                None => return
+            };
+
+            self.set_obv();
+        }     
+    }
+
     fn check_number(sudoku: &mut Sudoku, cur: (usize, usize), num: i32)-> bool {
         sudoku.board[cur.0][cur.1] = num;
         sudoku.set_obv();
@@ -143,15 +138,10 @@ impl Sudoku {
             return true;
         }
 
-        if let Some(pos) = Self::get_pos(sudoku) {
-            if Self::check_number(&mut sudoku.clone(), (pos.0, pos.1), pos.2[0]) {
-                return true;
-            } else if Self::check_number(&mut sudoku.clone(), (pos.0, pos.1), pos.2[1]) {
-                return true;
-            }
+        match Self::get_pos(sudoku) {
+            Some(pos) => Self::check_number(&mut sudoku.clone(), (pos.0,pos.1), pos.2[0]) || Self::check_number(&mut sudoku.clone(), (pos.0,pos.1), pos.2[1]),
+            None => false,
         }
-
-        false
     }
 
     /// set_obv:
@@ -167,6 +157,7 @@ impl Sudoku {
                 for j in 0..self.board[i].len() {
                     if self.values[i][j].len() == 1 {
                         self.board[i][j] = self.values[i][j][0];
+                        self.set_values();
                         done = false;
                     }
                 }
@@ -177,19 +168,9 @@ impl Sudoku {
     /// solved:
     /// checks if we are done
     fn solved(&self) -> bool {
-        let mut clone = self.clone();
-
         for i in 0..self.board.len() {
             for j in 0..self.board[i].len() {
-                let cur = clone.board[i][j];
-                clone.board[i][j] = 0;
-                let values = clone.find_values(i, j);
-
-                if values.len() > 1 && values[0] != cur {
-                    return false;
-                }
-
-                clone.board[i][j] = cur;
+                if self.board[i][j] == 0 { return false; }
             }
         }
 
@@ -246,6 +227,14 @@ mod test {
 
         assert_eq!(vec![6], sudoku.find_values(4, 4));
     }
+    
+    #[test]
+    fn sudoku_find_values_with_failing_example() {
+        let sudoku = Sudoku::from_str("531600487\n640800052\n000500000\n006100230\n010306040\n700200091\n900400070\n000760000\n000908005");
 
+        sudoku.show();
+        assert_eq!(vec![8], sudoku.find_values(3, 8));
+        assert_eq!(vec![8], sudoku.find_values(4, 8));
+    }
 }
 

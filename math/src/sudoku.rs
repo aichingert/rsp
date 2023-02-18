@@ -179,7 +179,7 @@ impl Sudoku {
 
     pub fn show(&self) {
         for i in 0..self.board.len() {
-            print!("\x1B[31m[ ");
+            print!("\x1B[90m[ ");
             for j in 0..self.board[i].len() {
                 match self.board[i][j] {
                     0 => print!("\x1B[30m{} ", self.board[i][j]),
@@ -195,7 +195,7 @@ impl Sudoku {
                     _ => print!("{} ", self.board[i][j]),
                 };
             }
-            println!("\x1B[31m]");
+            println!("\x1B[90m]");
         }
     }
 }

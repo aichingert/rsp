@@ -25,6 +25,11 @@ fn main() {
     //         v
     let mut sudoku: Sudoku = Sudoku::from_str("007000003\n159000000\n008000207\n000200046\n040007000\n500800000\n080050900\n000000100\n000091070");
 
+    // 2x2 ------
+    //          |
+    //          v
+    //let mut sudoku: Sudoku = Sudoku::from_str("3000\n0020\n0100\n0002");
+    //
     sudoku.show();
     sudoku.solve();
     println!();

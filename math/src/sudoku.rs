@@ -61,12 +61,12 @@ impl Sudoku {
         }
 
 
-        // Searches the grid the number is in if the the row would be 1 and the col 2
-        // the area we are going to search is marked
+        // Searches the grid that the number is in if the the row would be 1 and the col 2
+        // the area it's going to search is marked
 
         //	0 2 | 0 0
         //	1 0 | 3 0
-        //          - - -
+        //      -----
         //	3 4 0 0
         //	2 3 1 0
         let ry = row / self.dimension;
@@ -102,6 +102,56 @@ impl Sudoku {
     /// solves the sudoku
     pub fn solve(&mut self) {
         self.set_obv();
+        
+        while !self.solved() {
+            if let Some(pos) = Self::get_pos(self) {
+                println!("{:?}", pos);
+                if pos.0 == 0 && pos.1 == 8 {
+                    for i in 0..self.values.len() {
+                        println!("{:?}", self.values[i]);
+                    }
+                }
+                if Self::check_number(&mut self.clone(), (pos.0, pos.1), pos.2[0]) {
+                    self.board[pos.0][pos.1] = pos.2[0];
+                } else if Self::check_number(&mut self.clone(), (pos.0, pos.1), pos.2[1]) {
+                    self.board[pos.0][pos.1] = pos.2[1];
+                }
+                self.set_obv();
+                self.show();
+                println!();
+            } else { return; }
+        }     
+    }
+
+    fn get_pos(sudoku: &Sudoku) -> Option<(usize,usize, Vec<i32>)> {
+        for i in 0..sudoku.values.len() {
+            for j in 0..sudoku.values[i].len() {
+                if sudoku.values[i][j].len() == 2 {
+                    return Some((i, j, sudoku.values[i][j].clone()));
+                }
+            }
+        }
+
+        None
+    }
+
+    fn check_number(sudoku: &mut Sudoku, cur: (usize, usize), num: i32)-> bool {
+        sudoku.board[cur.0][cur.1] = num;
+        sudoku.set_obv();
+
+        if sudoku.solved() {
+            return true;
+        }
+
+        if let Some(pos) = Self::get_pos(sudoku) {
+            if Self::check_number(&mut sudoku.clone(), (pos.0, pos.1), pos.2[0]) {
+                return true;
+            } else if Self::check_number(&mut sudoku.clone(), (pos.0, pos.1), pos.2[1]) {
+                return true;
+            }
+        }
+
+        false
     }
 
     /// set_obv:
@@ -127,9 +177,19 @@ impl Sudoku {
     /// solved:
     /// checks if we are done
     fn solved(&self) -> bool {
+        let mut clone = self.clone();
+
         for i in 0..self.board.len() {
             for j in 0..self.board[i].len() {
-                if self.board[i][j] == 0 { return false; }
+                let cur = clone.board[i][j];
+                clone.board[i][j] = 0;
+                let values = clone.find_values(i, j);
+
+                if values.len() > 1 && values[0] != cur {
+                    return false;
+                }
+
+                clone.board[i][j] = cur;
             }
         }
 
@@ -138,7 +198,7 @@ impl Sudoku {
 
     pub fn show(&self) {
         for i in 0..self.board.len() {
-            print!("\x1B[90m[ ");
+            print!("\x1B[31m[ ");
             for j in 0..self.board[i].len() {
                 match self.board[i][j] {
                     0 => print!("\x1B[30m{} ", self.board[i][j]),
@@ -154,7 +214,14 @@ impl Sudoku {
                     _ => print!("{} ", self.board[i][j]),
                 };
             }
-            println!("\x1B[90m]");
+            println!("\x1B[31m]");
         }
     }
 }
+
+
+#[cfg(test)]
+mod test {
+    use crate::sudoku;
+}
+

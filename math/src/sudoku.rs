@@ -222,6 +222,30 @@ impl Sudoku {
 
 #[cfg(test)]
 mod test {
-    use crate::sudoku;
+    use super::*;
+
+    #[test]
+    fn sudoku_find_values_with_one_pos() {
+        let sudoku = Sudoku::from_str("000000000\n000000000\n000000000\n000056000\n000123000\n000478000\n000000000\n000000000\n000000000");
+
+        assert_eq!(vec![9], sudoku.find_values(3, 3));
+    }
+
+    #[test]
+    fn sudoku_find_values_with_multiple_pos() {
+        let sudoku = Sudoku::from_str("000900000\n000000000\n000000000\n000056000\n000103000\n000480000\n000000000\n000000000\n000000000");
+
+        assert_eq!(vec![2,7], sudoku.find_values(3, 3));
+        assert_eq!(vec![2,7,9], sudoku.find_values(5, 5));
+        assert_eq!(Vec::<i32>::new(), sudoku.find_values(3,5));
+    }
+
+    #[test]
+    fn sudoku_find_values_with_row_col_pos() {
+        let sudoku = Sudoku::from_str("000010000\n000020000\n000030000\n000000000\n540000009\n000800000\n000000000\n000000000\n000070000");
+
+        assert_eq!(vec![6], sudoku.find_values(4, 4));
+    }
+
 }
 

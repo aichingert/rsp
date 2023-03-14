@@ -232,7 +232,6 @@ mod test {
     fn sudoku_find_values_with_failing_example() {
         let sudoku = Sudoku::from_str("531600487\n640800052\n000500000\n006100230\n010306040\n700200091\n900400070\n000760000\n000908005");
 
-        sudoku.show();
         assert_eq!(vec![8], sudoku.find_values(3, 8));
         assert_eq!(vec![8], sudoku.find_values(4, 8));
     }

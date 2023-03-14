@@ -7,5 +7,5 @@ fn main() {
 
     voronoi.render_voronoi();
     voronoi.fill_circle(5, 0xFF000000);
-    voronoi.save_image("../image/image.ppm");
+    voronoi.save_image("../docs/img/image.ppm");
 }

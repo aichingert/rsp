@@ -28,8 +28,8 @@ fn main() {
     // 2x2 ------
     //          |
     //          v
-    //let mut sudoku: Sudoku = Sudoku::from_str("3000\n0020\n0100\n0002");
-    //
+    // let mut sudoku: Sudoku = Sudoku::from_str("3000\n0020\n0100\n0002");
+
     sudoku.show();
     sudoku.solve();
     println!();

@@ -87,10 +87,14 @@ impl Sudoku {
             self.set_values();
 
             match Self::get_pos(self) {
-                Some(pos) => match Self::check_number(&mut self.clone(), (pos.0,pos.1), pos.2[0]) {
-                    true => self.board[pos.0][pos.1] = pos.2[0],
-                    false => self.board[pos.0][pos.1] = pos.2[1],
-                },
+                Some(pos) => {
+                    let mut me = self.clone();
+
+                    match Self::check_number(&mut me, (pos.0,pos.1), pos.2[0]) {
+                        true => self.board = me.board,
+                        false => self.board[pos.0][pos.1] = pos.2[1],
+                    }
+                }
                 None => return
             };
 
@@ -107,7 +111,23 @@ impl Sudoku {
         }
 
         match Self::get_pos(sudoku) {
-            Some(pos) => Self::check_number(&mut sudoku.clone(), (pos.0,pos.1), pos.2[0]) || Self::check_number(&mut sudoku.clone(), (pos.0,pos.1), pos.2[1]),
+            Some(pos) => {
+                let mut inner = sudoku.clone();
+
+                match Self::check_number(&mut inner, (pos.0, pos.1), pos.2[0]) {
+                    true => sudoku.board = inner.board,
+                    false => {
+                        let mut iknow = sudoku.clone();
+
+                        match Self::check_number(&mut iknow, (pos.0, pos.1), pos.2[1]) {
+                            true => sudoku.board = iknow.board,
+                            false => return false,
+                        }
+                    }
+                }
+
+                true
+            }
             None => false,
         }
     }

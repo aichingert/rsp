@@ -9,40 +9,23 @@ pub struct Sudoku {
 }
 
 impl Sudoku {
-    /// new:
-    /// Creates a new Sudoku from a Vec
     pub fn new(puzzle: &Vec<Vec<i32>>) -> Self {
-        let mut board: Vec<Vec<i32>> = Vec::new();
-
-        for i in 0..puzzle.len() {
-            board.push(vec![]);
-            for j in 0..puzzle[i].len() {
-                board[i].push(puzzle[i][j]);
-            }
+        Self { 
+            board: puzzle.clone(), 
+            values: Vec::new(), 
+            dimension: (puzzle.len() as f64).sqrt() as usize 
         }
-
-        Self { board, values: Vec::new(), dimension: (puzzle.len() as f64).sqrt() as usize }
     }
 
-    /// from_str:
-    /// Creates a new Sudoku from a string
-    pub fn from_str(string: &str) -> Self {
-        let mut board: Vec<Vec<i32>> = Vec::new();
-        let mut loc: usize = 0;
+    pub fn from_str(s: &str) -> Self {
+        let board = s.lines()
+            .map(|l| l.chars().map(|c| (c as u8 - b'0') as i32).collect::<Vec<_>>())
+            .collect::<Vec<_>>();
+        let len = board.len() as f64;
 
-        for line in string.lines() {
-            board.push(vec![]);
-            for ch in line.chars() {
-                    board[loc].push(((ch as u8)-('0' as u8)) as i32);
-            }
-            loc += 1;
-        }
-
-        Self { board, values: Vec::new(), dimension: ((loc+1) as f64).sqrt() as usize }
+        Self { board, values: Vec::new(), dimension: len.sqrt() as usize }
     }
 
-    /// find_values:
-    /// gets the possible values for a position[row][col]
     fn find_values(&self, row: usize, col: usize) -> Vec<i32> {
         if self.board[row][col] != 0 {
             return vec![];
@@ -50,7 +33,6 @@ impl Sudoku {
 
         let mut invalid: Vec<i32> = Vec::new();
 
-        // Searches the board vertical and diagonal
         for i in 0..self.board.len() {
             if col != i && !invalid.contains(&self.board[row][i]) && self.board[row][i] != 0 {
                 invalid.push(self.board[row][i]);
@@ -60,15 +42,6 @@ impl Sudoku {
             }
         }
 
-
-        // Searches the grid that the number is in if the the row would be 1 and the col 2
-        // the area it's going to search is marked
-
-        //	0 2 | 0 0
-        //	1 0 | 3 0
-        //      -----
-        //	3 4 0 0
-        //	2 3 1 0
         let ry = row / self.dimension;
         let cx = col / self.dimension;
 
@@ -80,12 +53,9 @@ impl Sudoku {
             }
         }
 
-        // Filters every value we found so we get the possible ones
-        (1..=(self.dimension*self.dimension)as i32).filter(|n| !invalid.contains(n)).collect::<Vec<i32>>()
+        (1..=(self.dimension*self.dimension) as i32).filter(|n| !invalid.contains(n)).collect::<Vec<i32>>()
     }
 
-    /// set_values:
-    /// sets the possible values for every position
     fn set_values(&mut self) {
         self.values.clear();
 
@@ -110,12 +80,10 @@ impl Sudoku {
         None
     }
 
-    /// solve:
-    /// solves the sudoku
     pub fn solve(&mut self) {
         self.set_obv();
         
-        while !self.solved() {
+        while !self.is_solved() {
             self.set_values();
 
             match Self::get_pos(self) {
@@ -134,7 +102,7 @@ impl Sudoku {
         sudoku.board[cur.0][cur.1] = num;
         sudoku.set_obv();
 
-        if sudoku.solved() {
+        if sudoku.is_solved() {
             return true;
         }
 
@@ -144,8 +112,6 @@ impl Sudoku {
         }
     }
 
-    /// set_obv:
-    /// sets the values that have only one possibility
     fn set_obv(&mut self) {
         let mut done: bool = false;
 
@@ -165,16 +131,8 @@ impl Sudoku {
         }
     }
 
-    /// solved:
-    /// checks if we are done
-    fn solved(&self) -> bool {
-        for i in 0..self.board.len() {
-            for j in 0..self.board[i].len() {
-                if self.board[i][j] == 0 { return false; }
-            }
-        }
-
-        true
+    fn is_solved(&self) -> bool {
+        !self.board.iter().any(|b| b.iter().any(|&x| x == 0))
     }
 
     pub fn show(&self) {

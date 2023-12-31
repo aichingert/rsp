@@ -9,7 +9,13 @@ fn main() {
     std::io::stdin().read_line(&mut line).unwrap();
     line = line.trim().to_string();
 
-    let result: Option<f32> = solve_upn_calculator(&mut list, &line.split(' ').map(|s| s.to_string()).filter(|f| !f.is_empty()).collect::<Vec<String>>());
+    let lines = &line
+        .split(' ')
+        .map(|s| s.to_string())
+        .filter(|f| !f.is_empty())
+        .collect::<Vec<String>>();
+
+    let result: Option<f32> = solve_upn_calculator(&mut list, lines);
 
     if let Some(res) = result {
         println!("The result is {res}");
@@ -35,7 +41,8 @@ fn main() {
 /// and returns the value calulated
 fn solve_upn_calculator(list: &mut LinkedList<f32>, input: &Vec<String>) -> Option<f32> {
     for i in 0..input.len() {
-        if &input[i][0..=0] == "+" || &input[i][0..=0] == "-" || &input[i][0..=0] == "*" || &input[i][0..=0] == "/" {
+        let op = input[i].chars().next().unwrap();
+        if op == '+' || op == '-' || op == '*' || op == '/' {
             let mut values: [f32; 2] = [0f32; 2];
 
             for i in 0..2usize {

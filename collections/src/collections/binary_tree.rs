@@ -56,7 +56,21 @@ impl<T: Ord> Tree<T> {
     }
 
     pub fn remove(&mut self, val: T) -> bool {
-        false
+        if let Some(cur) = &self.val {
+            return match cur.cmp(&val) {
+                Ordering::Less => {
+                    self.lhs.as_mut().unwrap().borrow_mut().remove(val)
+                }
+                Ordering::Equal => {
+                    true
+                }
+                Ordering::Greater => {
+                    self.rhs.as_mut().unwrap().borrow_mut().remove(val)
+                }
+            };
+        } else {
+            false
+        }
     }
 }
 

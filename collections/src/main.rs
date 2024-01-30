@@ -43,40 +43,21 @@ fn solve_upn_calculator(list: &mut LinkedList<f32>, input: &Vec<String>) -> Opti
     for i in 0..input.len() {
         let op = input[i].chars().next().unwrap();
         if op == '+' || op == '-' || op == '*' || op == '/' {
-            let mut values: [f32; 2] = [0f32; 2];
+            let vals = [list.pop()?, list.pop()?];
 
-            for i in 0..2usize {
-                if let Some(value) = list.pop() {
-                    values[i] = value;
-                } else {
-                    return None;
-                }
-            }
-
-            match &input[i][0..=0] {
-                "+" => list.push(values[0] + values[1]),
-                "-" => list.push(values[0] - values[1]),
-                "*" => list.push(values[0] * values[1]),
-                "/" => list.push(values[0] / values[1]),
+            list.push(match op {
+                '+' => vals[0] + vals[1],
+                '-' => vals[0] - vals[1],
+                '*' => vals[0] * vals[1],
+                '/' => vals[0] / vals[1],
                 _ => {
                     return None;
                 }
-            }
+            });
         } else {
-            let parse = input[i].parse::<f32>();
-
-            match parse {
-                Ok(value) => list.push(value),
-                Err(_err) => return None
-            }
+            list.push(input[i].parse::<f32>().ok()?);
         }
     }
 
-    let result: Option<f32> = list.pop();
-
-    if list.is_empty() {
-        result
-    } else {
-        None
-    }
+    list.pop()
 }

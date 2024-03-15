@@ -1,14 +1,29 @@
 // Math - rust
 // aichingert
 
-pub mod random;
 pub mod pi;
+pub mod random;
 pub mod sudoku;
+pub mod matrix;
 
 use pi::approximate_pi;
 use sudoku::Sudoku;
+use matrix::Matrix;
 
 fn main() {
+
+    let a = Matrix::<i32, 2>::new();
+
+    let v = vec![
+        vec![2,-2,-1,3],
+        vec![4,3,1,-2],
+        vec![-1,2,1,-1],
+        vec![3,-2,-4,5],
+    ];
+
+    println!("RESULT {:?}", matrix::determinant(v));
+
+    /*
     // Pi
     let precision: u32 = 1000000;
 
@@ -34,4 +49,5 @@ fn main() {
     sudoku.solve();
     println!();
     sudoku.show();
+    */
 }

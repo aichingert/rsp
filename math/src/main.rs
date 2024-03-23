@@ -1,6 +1,10 @@
 // Math - rust
 // aichingert
 
+pub mod kids;
+
+use kids::DTree;
+
 pub mod pi;
 pub mod random;
 pub mod sudoku;
@@ -11,7 +15,10 @@ use sudoku::Sudoku;
 use matrix::Matrix;
 
 fn main() {
+    let d_tree = DTree::new("kids/lung-cancer-prepared.csv").unwrap();
+    d_tree.generate();
 
+    /*
     let a = Matrix::<i32, 2>::new();
 
     let v = vec![
@@ -22,6 +29,7 @@ fn main() {
     ];
 
     println!("RESULT {:?}", matrix::determinant(v));
+    */
 
     /*
     // Pi

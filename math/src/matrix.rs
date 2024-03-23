@@ -67,8 +67,6 @@ pub fn determinant(sub: Vec<Vec<i32>>) -> i32 {
             }
         }
 
-        println!("{} {clone:?} {}", sub[i][0], sub[i][0] * determinant(clone.clone()));
-
         ans += (-1i32).pow(i as u32) * sub[i][0] * determinant(clone);
     }
 

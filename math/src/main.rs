@@ -2,6 +2,7 @@
 // aichingert
 
 pub mod kids;
+pub mod games;
 
 use kids::DecisionTree;
 
@@ -15,8 +16,26 @@ use sudoku::Sudoku;
 use matrix::Matrix;
 
 fn main() {
-    let tree = DecisionTree::from("kids/diabetes-final.csv").unwrap();
-    tree.print_tree("");
+    // tuple: (color, value)
+    // colors: 
+    // heart: 0
+    // shell: 1
+    // leaf : 2
+    // acorn: 3 
+    //
+    // values: 
+    // 2 | 3 | 4 | 10 | 11
+    // u | o | k | 10 | ass
+    //0
+    let result = games::schnapsn::solve(
+        0, 
+        [(1,3, 0), (3,10,0), (0,10,0), (3,4,0), (0,3,0)],
+        [(1,4,0), (0,4,0), (1,2,0), (0,11,0), (2,4,0)],
+    );
+    println!("{result:?}");
+
+    //let tree = DecisionTree::from("kids/diabetes-final.csv").unwrap();
+    //tree.print_tree("");
 
     /*
     let a = Matrix::<i32, 2>::new();
